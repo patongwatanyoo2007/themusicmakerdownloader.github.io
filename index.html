@@ -179,18 +179,17 @@
     </div>
 
     <footer>
-        <p>&copy; 2026 The Music Maker. Design Upgraded.</p>
+        <p>&copy; 2026 The Music Maker. Online Version.</p>
     </footer>
 
     <script>
-        // ฟังก์ชันเปิด/ปิด ปุ่มเลือกความชัด
         function toggleQuality() {
             const format = document.getElementById('formatSelect').value;
             const qualitySelect = document.getElementById('qualitySelect');
             if (format === 'mp4') {
-                qualitySelect.style.display = 'block'; // โชว์เมื่อเลือก MP4
+                qualitySelect.style.display = 'block'; 
             } else {
-                qualitySelect.style.display = 'none'; // ซ่อนเมื่อเลือก MP3
+                qualitySelect.style.display = 'none'; 
             }
         }
 
@@ -208,8 +207,12 @@
             statusMsg.style.display = "block";
             statusMsg.innerText = "กำลังค้นหาและดึงไฟล์ที่ดีที่สุด... สังเกตการดาวน์โหลดที่มุมขวาบนครับ";
 
-            // ส่งข้อมูล URL, Format และ Quality ไปให้หลังบ้าน
-            window.location.href = `http://localhost:3000/api/real-download?url=${encodeURIComponent(url)}&format=${format}&quality=${quality}`;
+            // 🔴🔴🔴 จุดสำคัญที่สุด: แก้ไขลิงก์ตรงนี้ให้เป็นของ Render 🔴🔴🔴
+            // เอาลิงก์ที่คุณได้จาก Render.com มาใส่ในเครื่องหมายคำพูดด้านล่าง (อย่าลบเครื่องหมายคำพูดออกนะ)
+            const myBackendURL = "https://ใส่ลิงก์เว็บ-render-ของคุณตรงนี้.onrender.com";
+
+            // สั่งให้หน้าเว็บวิ่งไปหาหลังบ้าน
+            window.location.href = `${myBackendURL}/api/real-download?url=${encodeURIComponent(url)}&format=${format}&quality=${quality}`;
         }
     </script>
 
