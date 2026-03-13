@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Music Maker | Pro Downloader</title>
+    <style>
+        /* สร้างพื้นหลังแบบเคลื่อนไหว (Animated Gradient) */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            flex: 1;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        /* ดีไซน์กล่องแบบกระจกใส (Glassmorphism) */
+        .downloader-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        h2 {
+            color: #b21f1f;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        p.subtitle {
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus {
+            border-color: #b21f1f;
+            box-shadow: 0 0 10px rgba(178, 31, 31, 0.2);
+        }
+        .options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        select, button {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            flex: 1;
+            min-width: 150px;
+        }
+        select {
+            border: 2px solid #ddd;
+            cursor: pointer;
+            background-color: white;
+        }
+        /* ซ่อนกล่องเลือกความชัดไว้ก่อน จะโชว์เฉพาะตอนเลือก MP4 */
+        #qualityGroup {
+            display: none;
+            width: 100%;
+        }
+        button {
+            background: linear-gradient(45deg, #b21f1f, #fdbb2d);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(178, 31, 31, 0.4);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .support-icons {
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+            background: rgba(0,0,0,0.05);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #ccc;
+            font-size: 14px;
+        }
+        #status-message {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #b21f1f;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎵 The Music Maker 🎬</h1>
+        <p>Premium Downloader System</p>
+    </header>
+
+    <div class="container">
+        <div class="downloader-card">
+            <h2>ค้นหาหรือวางลิงก์ของคุณที่นี่</h2>
+            <p class="subtitle">รองรับ YouTube, Spotify, Apple Music, Tidal หรือพิมพ์ชื่อเพลงได้เลย</p>
+
+            <div class="input-group">
+                <input type="text" id="urlInput" placeholder="🔗 ใส่ลิงก์ หรือ 🔍 พิมพ์ชื่อเพลง (เช่น วัดปะหล่ะ)">
+                
+                <div class="options">
+                    <select id="formatSelect" onchange="toggleQuality()">
+                        <option value="mp3">🎧 ดึงเฉพาะเสียง (MP3)</option>
+                        <option value="mp4">🎬 โหลดทั้งวิดีโอ (MP4)</option>
+                    </select>
+                    
+                    <select id="qualitySelect" style="display: none;">
+                        <option value="highest">✨ ชัดสุดเท่าที่มี (Highest)</option>
+                        <option value="lowest">📱 ประหยัดเน็ต (Lowest)</option>
+                    </select>
+
+                    <button onclick="processLink()">ดาวน์โหลดเลย</button>
+                </div>
+            </div>
+
+            <p id="status-message">กำลังทำงาน... กรุณารอสักครู่</p>
+
+            <div class="support-icons">
+                <p>✅ YouTube | ✅ Spotify | ✅ Apple Music | ✅ Tidal | 🔍 ค้นหาด้วยชื่อ</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 The Music Maker. Design Upgraded.</p>
+    </footer>
+
+    <script>
+        // ฟังก์ชันเปิด/ปิด ปุ่มเลือกความชัด
+        function toggleQuality() {
+            const format = document.getElementById('formatSelect').value;
+            const qualitySelect = document.getElementById('qualitySelect');
+            if (format === 'mp4') {
+                qualitySelect.style.display = 'block'; // โชว์เมื่อเลือก MP4
+            } else {
+                qualitySelect.style.display = 'none'; // ซ่อนเมื่อเลือก MP3
+            }
+        }
+
+        function processLink() {
+            const url = document.getElementById('urlInput').value.trim();
+            const format = document.getElementById('formatSelect').value;
+            const quality = document.getElementById('qualitySelect').value;
+            const statusMsg = document.getElementById('status-message');
+
+            if (!url) {
+                alert("กรุณาวางลิงก์ หรือพิมพ์ชื่อเพลงก่อนครับ!");
+                return;
+            }
+
+            statusMsg.style.display = "block";
+            statusMsg.innerText = "กำลังค้นหาและดึงไฟล์ที่ดีที่สุด... สังเกตการดาวน์โหลดที่มุมขวาบนครับ";
+
+            // ส่งข้อมูล URL, Format และ Quality ไปให้หลังบ้าน
+            window.location.href = `http://localhost:3000/api/real-download?url=${encodeURIComponent(url)}&format=${format}&quality=${quality}`;
+        }
+    </script>
+
+</body>
+</html>
